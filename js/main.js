@@ -3741,12 +3741,15 @@ angular
             var baseUrl = "http://www.cardekho.com/getIPhoneFeedsDispatchAction.do?authenticateKey=14@89cardekho66feeds&format=Gson&parameter="
             var urlToSearch = baseUrl + "getCarVariantDetailByCarModelName&ModelName=";
 
-            $scope.isCompare = "images/compare_btn_disable.png";
+            $scope.isCompare = "images/compare_btn_enable.png";
             $scope.vsImage = "images/vs_grey.png";
+            $scope.background = [];
+            $scope.background.push('disableimg');
+            console.log("background is set " + $scope.background);
 
             $scope.compDataObj = sharedProperties.getObject();
 
-
+            var f1 = false; f2 = false;
             var urlForData = "getPopularCompareCarListWithStatus&startLimit=1&endLimit=5"
 
             sharedProperties.getHttpData(urlForData, function (popularCarsWithStatus){
@@ -3755,13 +3758,26 @@ angular
 
             $scope.fn_modelSelect = function(modelIndex){
                 console.log("fn_selectModel "+ modelIndex);
+                if(modelIndex == "first")
+                	f1 = true;
+                else if(modelIndex == "second")
+                    f2 = true;
+               
                 sharedProperties.setCurrentModelNumber(modelIndex);
                 $state.go("eventmenu.brand",{"retunEvent": "compare-cars"});
+                if(f1 & f2){
+                	$scope.background.pop('disableimg');
+                	$scope.background.push('enableimg');
+                }
             }
-
-            $scope.fn_selectCompare = function(){
+             if(($scope.compDataObj.varientDetailObj.first.displayVariantId != undefined) & ($scope.compDataObj.varientDetailObj.second.displayVariantId != undefined))
+             console.log($scope.compDataObj.varientDetailObj.first.displayVariantId);
+             
+            	 $scope.fn_selectCompare = function(){
+            	if(f1 & f2){
                 getDataToCompare($scope.compDataObj.varientDetailObj.first.carVariantId, $scope.compDataObj.varientDetailObj.second.carVariantId);
-
+            	}
+            	
             }
 
             var showCompare = function(compareDate){
